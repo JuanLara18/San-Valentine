@@ -1,0 +1,63 @@
+{
+  "menu": {
+    "title": "Love Quest",
+    "subtitle": "A love adventure",
+    "play": "Play",
+    "language": "Language"
+  },
+  "name": {
+    "askName": "What's your name?",
+    "placeholder": "Your name...",
+    "confirm": "OK",
+    "nicknameAsk": "Can I call you {nickname}?",
+    "yes": "Yes!",
+    "no": "Hmm...",
+    "nicknameAnyway": "I'll call you {nickname} anyway! 💕"
+  },
+  "story": {
+    "intro": [
+      "In a world of pink clouds...",
+      "a little Cupid searches for",
+      "the perfect gift of love.",
+      "Help collect all the hearts,",
+      "{nickname}!"
+    ],
+    "level1Complete": [
+      "Great job, {nickname}!",
+      "You found the first heartbeats.",
+      "But the path gets harder..."
+    ],
+    "level2Complete": [
+      "Amazing, {nickname}!",
+      "Not even storms can stop you.",
+      "One last challenge remains..."
+    ],
+    "finalIntro": [
+      "This is the moment, {nickname}.",
+      "The grand gesture of love",
+      "awaits you at the end.",
+      "You can do it! 💕"
+    ]
+  },
+  "game": {
+    "level": "Level",
+    "lives": "Lives",
+    "hearts": "Hearts",
+    "ready": "Ready?",
+    "go": "Let's go!",
+    "levelComplete": "Level Complete!",
+    "gameOver": "Oh no!",
+    "tryAgain": "Try Again",
+    "level1Name": "The First Heartbeat",
+    "level2Name": "Through the Storms",
+    "level3Name": "The Grand Gesture"
+  },
+  "victory": {
+    "tapToOpen": "Tap to open...",
+    "yes": "Yes!",
+    "yesObviously": "Obviously yes!",
+    "celebration": "I knew you'd say yes!!!",
+    "seeYou": "See you on",
+    "withLove": "With all my love,"
+  }
+}

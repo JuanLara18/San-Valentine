@@ -1,0 +1,64 @@
+{
+  "menu": {
+    "title": "Love Quest",
+    "subtitle": "Una aventura de amor",
+    "play": "Jugar",
+    "language": "Idioma"
+  },
+  "name": {
+    "askName": "¿Cómo te llamas?",
+    "placeholder": "Tu nombre...",
+    "confirm": "OK",
+    "nicknameAsk": "¿Te puedo decir {nickname}?",
+    "yes": "¡Sí!",
+    "no": "Mmm...",
+    "nicknameAnyway": "¡Te voy a decir {nickname} de todas formas! 💕"
+  },
+  "story": {
+    "intro": [
+      "En un mundo de nubes rosadas...",
+      "un pequeño Cupido busca",
+      "el regalo perfecto de amor.",
+      "¡Ayúdale a recolectar",
+      "todos los corazones, {nickname}!"
+    ],
+    "level1Complete": [
+      "¡Muy bien, {nickname}!",
+      "Has encontrado los primeros latidos.",
+      "Pero el camino se pone",
+      "más difícil..."
+    ],
+    "level2Complete": [
+      "¡Increíble, {nickname}!",
+      "Ni las tormentas te detienen.",
+      "Falta una última prueba..."
+    ],
+    "finalIntro": [
+      "Este es el momento, {nickname}.",
+      "El gran gesto de amor",
+      "te espera al final.",
+      "¡Tú puedes! 💕"
+    ]
+  },
+  "game": {
+    "level": "Nivel",
+    "lives": "Vidas",
+    "hearts": "Corazones",
+    "ready": "¿Lista?",
+    "go": "¡Vamos!",
+    "levelComplete": "¡Nivel Completo!",
+    "gameOver": "¡Oh no!",
+    "tryAgain": "Intentar de nuevo",
+    "level1Name": "El Primer Latido",
+    "level2Name": "Cruzando Tormentas",
+    "level3Name": "El Gran Gesto"
+  },
+  "victory": {
+    "tapToOpen": "Toca para abrir...",
+    "yes": "¡Sí!",
+    "yesObviously": "¡Obvio que sí!",
+    "celebration": "¡¡¡Sabía que dirías que sí!!!",
+    "seeYou": "Nos vemos el",
+    "withLove": "Con todo mi amor,"
+  }
+}
