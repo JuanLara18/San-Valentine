@@ -1,0 +1,21 @@
+{
+  "name": "love-quest",
+  "version": "1.0.0",
+  "description": "A retro pixel-art platformer Valentine's Day invitation game. Fork it and customize it for your special someone!",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["valentine", "game", "phaser", "pixel-art", "retro", "love"],
+  "license": "MIT",
+  "dependencies": {
+    "phaser": "^3.80.1",
+    "i18next": "^23.11.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.4.2"
+  }
+}
