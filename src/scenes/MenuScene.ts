@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { SCENES, REGISTRY } from '../utils/constants';
 import { gameConfig } from '../config/game.config';
 import { t, changeLanguage, getCurrentLanguage } from '../i18n';
+import { audioManager } from '../systems/AudioManager';
 
 export class MenuScene extends Phaser.Scene {
   private stars: Phaser.GameObjects.Image[] = [];
@@ -15,6 +16,16 @@ export class MenuScene extends Phaser.Scene {
     const cx = width / 2;
 
     this.cameras.main.fadeIn(500);
+
+    // Init audio on any interaction in this scene
+    this.input.on('pointerdown', () => {
+      audioManager.init();
+      audioManager.resume();
+      if (!audioManager.muted) audioManager.playTrack('menu');
+    }, this);
+
+    // Start menu music if audio already initialized
+    audioManager.playTrack('menu');
 
     // Background gradient
     const bg = this.add.graphics();
@@ -142,6 +153,7 @@ export class MenuScene extends Phaser.Scene {
       playText.setScale(0.95);
     });
     playBtn.on('pointerup', () => {
+      audioManager.playClick();
       this.cameras.main.fadeOut(500, 26, 10, 46);
       this.cameras.main.once('camerafadeoutcomplete', () => {
         this.scene.start(SCENES.NAME);

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { gameConfig } from '../config/game.config';
+import { audioManager } from '../systems/AudioManager';
 
 /** Global mobile input state set by HTML touch controls */
 interface MobileInput { left: boolean; right: boolean; jump: boolean }
@@ -98,12 +99,14 @@ export class Player {
         this.sprite.setVelocityY(jumpForce);
         this.jumpConsumed = true;
         this.lastGroundedTime = 0; // Prevent double coyote
+        audioManager.playJump();
       } else if (isTouchingWall) {
         // Wall jump: jump + kick away from wall
         this.sprite.setVelocityY(jumpForce * 0.9);
         this.sprite.setVelocityX(body.blocked.left ? this.WALL_JUMP_KICK : -this.WALL_JUMP_KICK);
         this.sprite.setFlipX(body.blocked.left ? false : true);
         this.jumpConsumed = true;
+        audioManager.playJump();
       }
     }
 

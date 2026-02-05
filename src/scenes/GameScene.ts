@@ -7,6 +7,7 @@ import { Heart } from '../entities/Heart';
 import { Enemy } from '../entities/Enemy';
 import { levels, PlatformData } from '../systems/LevelManager';
 import { isMobileDevice } from '../utils/helpers';
+import { audioManager } from '../systems/AudioManager';
 
 interface GameData {
   level: number;
@@ -101,6 +102,10 @@ export class GameScene extends Phaser.Scene {
 
     // Show level intro
     this.showLevelIntro();
+
+    // Start music based on level theme
+    const musicTrack = levelData.bgStyle === 'storm' ? 'storm' as const : 'game' as const;
+    audioManager.playTrack(musicTrack);
 
     // Fall death
     this.player.sprite.setCollideWorldBounds(false);
@@ -350,6 +355,7 @@ export class GameScene extends Phaser.Scene {
     this.heartsCollected++;
     heart.collect(this);
     this.hearts = this.hearts.filter(h => h !== heart);
+    audioManager.playCollect();
   }
 
   private hitEnemy(): void {
@@ -357,6 +363,7 @@ export class GameScene extends Phaser.Scene {
 
     const isDead = this.player.hit();
     this.registry.set(REGISTRY.LIVES, this.player.lives);
+    audioManager.playHit();
 
     // Screen shake
     this.cameras.main.shake(200, 0.01);
@@ -424,6 +431,7 @@ export class GameScene extends Phaser.Scene {
 
   private completeLevel(): void {
     this.isLevelComplete = true;
+    audioManager.playWin();
 
     const { width } = gameConfig;
     const cx = width / 2;

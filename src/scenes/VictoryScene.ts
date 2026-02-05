@@ -3,6 +3,7 @@ import { SCENES, REGISTRY } from '../utils/constants';
 import { gameConfig } from '../config/game.config';
 import { valentineConfig } from '../config/valentine.config';
 import { t } from '../i18n';
+import { audioManager } from '../systems/AudioManager';
 
 export class VictoryScene extends Phaser.Scene {
   private confettiTimer?: Phaser.Time.TimerEvent;
@@ -17,6 +18,9 @@ export class VictoryScene extends Phaser.Scene {
     const cy = height / 2;
 
     this.cameras.main.fadeIn(800);
+
+    // Victory music
+    audioManager.playTrack('victory');
 
     // Dark background with stars
     const bg = this.add.graphics();

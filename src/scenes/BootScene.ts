@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { SCENES } from '../utils/constants';
 import { gameConfig } from '../config/game.config';
 import { AssetGenerator } from '../systems/AssetGenerator';
+import { audioManager } from '../systems/AudioManager';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -68,6 +69,12 @@ export class BootScene extends Phaser.Scene {
           });
         }
       },
+    });
+
+    // Initialize audio on first user interaction
+    this.input.once('pointerdown', () => {
+      audioManager.init();
+      audioManager.resume();
     });
 
     // Floating hearts animation during loading
