@@ -5,46 +5,265 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#1a0a2e" />
+  <meta name="theme-color" content="#0d0221" />
   <title>Love Quest</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #1a0a2e;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      width: 100%; height: 100%; overflow: hidden;
       font-family: 'Press Start 2P', monospace;
       -webkit-tap-highlight-color: transparent;
-      touch-action: none;
-      user-select: none;
+      touch-action: none; user-select: none;
+      background: #0d0221;
     }
+
+    /* ===== DESKTOP WRAPPER ===== */
+    .desktop-wrapper {
+      width: 100%; height: 100%;
+      display: flex; justify-content: center; align-items: center;
+      position: relative; overflow: hidden;
+    }
+
+    /* Animated gradient background (desktop only) */
+    .desktop-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: linear-gradient(135deg, #0d0221 0%, #1a0a2e 25%, #2d1b69 50%, #1a0a2e 75%, #0d0221 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* CSS stars layer */
+    .stars-layer {
+      position: absolute; inset: 0; z-index: 1;
+      overflow: hidden; pointer-events: none;
+    }
+    .star {
+      position: absolute; border-radius: 50%;
+      background: white;
+      animation: twinkle var(--duration) ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: var(--min-opacity); transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* Floating hearts (CSS only) */
+    .hearts-layer {
+      position: absolute; inset: 0; z-index: 1;
+      overflow: hidden; pointer-events: none;
+    }
+    .floating-heart {
+      position: absolute; bottom: -30px;
+      font-size: var(--size);
+      color: var(--color);
+      opacity: 0;
+      animation: floatUp var(--duration) ease-in infinite;
+      animation-delay: var(--delay);
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+      10%  { opacity: var(--max-opacity); }
+      90%  { opacity: var(--max-opacity); }
+      100% { transform: translateY(-110vh) rotate(var(--rotation)); opacity: 0; }
+    }
+
+    /* ===== GAME FRAME (desktop) ===== */
+    .game-frame {
+      position: relative; z-index: 10;
+      padding: 12px;
+      background: linear-gradient(145deg, #2d1b69, #1a0a2e);
+      border-radius: 20px;
+      border: 2px solid rgba(196, 77, 255, 0.3);
+      box-shadow:
+        0 0 40px rgba(196, 77, 255, 0.15),
+        0 0 80px rgba(255, 64, 129, 0.08),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .game-frame::before {
+      content: '';
+      position: absolute; inset: -2px; border-radius: 22px;
+      background: linear-gradient(135deg, #c44dff33, #ff408133, #c44dff33);
+      z-index: -1;
+      animation: borderGlow 4s ease-in-out infinite;
+    }
+    @keyframes borderGlow {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Game container */
     #game-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      border-radius: 10px;
+      overflow: hidden;
+      line-height: 0;
     }
     canvas {
       display: block;
       image-rendering: pixelated;
       image-rendering: crisp-edges;
     }
+
+    /* ===== SIDE PANELS (desktop) ===== */
+    .side-panel {
+      position: relative; z-index: 5;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 0 40px; gap: 30px;
+      color: #c44dff;
+      text-align: center;
+    }
+    .side-panel.left { align-items: flex-end; }
+    .side-panel.right { align-items: flex-start; }
+
+    .side-title {
+      font-size: 24px; color: #ff6b9d;
+      text-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+      line-height: 1.4;
+    }
+    .side-subtitle {
+      font-size: 9px; color: #c44dff;
+      opacity: 0.7; line-height: 1.8;
+    }
+    .side-heart {
+      font-size: 40px;
+      animation: heartPulse 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 0 15px rgba(255, 64, 129, 0.6));
+    }
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+    .side-controls {
+      font-size: 7px; color: #9c27b0;
+      line-height: 2.4; opacity: 0.6;
+      text-align: left;
+    }
+    .side-controls span {
+      color: #ff6b9d; font-size: 8px;
+    }
+    .pixel-divider {
+      width: 80px; height: 2px;
+      background: linear-gradient(90deg, transparent, #c44dff, transparent);
+      opacity: 0.4;
+    }
+
+    /* ===== MOBILE: hide everything, just game ===== */
+    @media (max-width: 768px), (max-height: 500px) {
+      .desktop-bg, .stars-layer, .hearts-layer,
+      .side-panel, .game-frame::before { display: none !important; }
+      .desktop-wrapper {
+        background: #0d0221;
+      }
+      .game-frame {
+        padding: 0; border-radius: 0;
+        border: none; background: none;
+        box-shadow: none;
+      }
+      #game-container { border-radius: 0; }
+    }
+
+    /* Medium screens: hide side panels, keep frame */
+    @media (max-width: 1100px) and (min-width: 769px) {
+      .side-panel { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div id="game-container"></div>
+  <div class="desktop-wrapper">
+    <!-- Animated background -->
+    <div class="desktop-bg"></div>
+
+    <!-- Stars -->
+    <div class="stars-layer" id="stars"></div>
+
+    <!-- Floating hearts -->
+    <div class="hearts-layer" id="hearts"></div>
+
+    <!-- Left panel -->
+    <div class="side-panel left">
+      <div class="side-heart">💕</div>
+      <div class="side-title">Love<br>Quest</div>
+      <div class="pixel-divider"></div>
+      <div class="side-subtitle">
+        A retro adventure<br>of love
+      </div>
+    </div>
+
+    <!-- Game -->
+    <div class="game-frame">
+      <div id="game-container"></div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="side-panel right">
+      <div class="side-heart">✨</div>
+      <div class="side-controls">
+        <span>←→</span> Move<br>
+        <span> ↑ </span> Jump<br>
+        <span> W </span> Wall Jump<br>
+        <br>
+        Collect all the<br>
+        hearts to advance!
+      </div>
+      <div class="pixel-divider"></div>
+      <div class="side-subtitle">
+        Collect hearts<br>
+        Avoid enemies<br>
+        Find the message
+      </div>
+      <div class="side-heart" style="font-size: 28px; animation-delay: 0.5s;">💝</div>
+    </div>
+  </div>
+
+  <!-- Generate stars & hearts via JS (no runtime cost, one-time DOM insert) -->
+  <script>
+    (function() {
+      // Stars
+      const starsEl = document.getElementById('stars');
+      for (let i = 0; i < 80; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        const size = Math.random() * 2.5 + 1;
+        s.style.cssText = `
+          width:${size}px; height:${size}px;
+          left:${Math.random()*100}%; top:${Math.random()*100}%;
+          --duration:${1.5+Math.random()*3}s;
+          --delay:${Math.random()*4}s;
+          --min-opacity:${0.15+Math.random()*0.35};
+        `;
+        starsEl.appendChild(s);
+      }
+      // Floating hearts
+      const heartsEl = document.getElementById('hearts');
+      const symbols = ['♥','♥','💕','✦','♥','💗'];
+      const colors = ['#ff1744','#ff4081','#ff6b9d','#c44dff','#e91e63','#f48fb1'];
+      for (let i = 0; i < 18; i++) {
+        const h = document.createElement('div');
+        h.className = 'floating-heart';
+        h.textContent = symbols[i % symbols.length];
+        h.style.cssText = `
+          left:${Math.random()*100}%;
+          --size:${10+Math.random()*18}px;
+          --color:${colors[i % colors.length]};
+          --duration:${8+Math.random()*12}s;
+          --delay:${Math.random()*15}s;
+          --max-opacity:${0.15+Math.random()*0.25};
+          --rotation:${-30+Math.random()*60}deg;
+        `;
+        heartsEl.appendChild(h);
+      }
+    })();
+  </script>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
