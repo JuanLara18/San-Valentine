@@ -21,14 +21,14 @@
       background: #0d0221;
     }
 
-    /* ===== DESKTOP WRAPPER ===== */
+    /* ===== DESKTOP LAYOUT ===== */
     .desktop-wrapper {
       width: 100%; height: 100%;
       display: flex; justify-content: center; align-items: center;
       position: relative; overflow: hidden;
     }
 
-    /* Animated gradient background (desktop only) */
+    /* Animated gradient background */
     .desktop-bg {
       position: absolute; inset: 0; z-index: 0;
       background: linear-gradient(135deg, #0d0221 0%, #1a0a2e 25%, #2d1b69 50%, #1a0a2e 75%, #0d0221 100%);
@@ -41,14 +41,13 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* CSS stars layer */
+    /* CSS stars */
     .stars-layer {
       position: absolute; inset: 0; z-index: 1;
       overflow: hidden; pointer-events: none;
     }
     .star {
-      position: absolute; border-radius: 50%;
-      background: white;
+      position: absolute; border-radius: 50%; background: white;
       animation: twinkle var(--duration) ease-in-out infinite;
       animation-delay: var(--delay);
     }
@@ -57,16 +56,14 @@
       50% { opacity: 1; transform: scale(1.3); }
     }
 
-    /* Floating hearts (CSS only) */
+    /* Floating hearts */
     .hearts-layer {
       position: absolute; inset: 0; z-index: 1;
       overflow: hidden; pointer-events: none;
     }
     .floating-heart {
       position: absolute; bottom: -30px;
-      font-size: var(--size);
-      color: var(--color);
-      opacity: 0;
+      font-size: var(--size); color: var(--color); opacity: 0;
       animation: floatUp var(--duration) ease-in infinite;
       animation-delay: var(--delay);
     }
@@ -101,11 +98,14 @@
       50% { opacity: 1; }
     }
 
-    /* Game container */
+    /* Game container - DESKTOP: large canvas */
     #game-container {
       border-radius: 10px;
       overflow: hidden;
       line-height: 0;
+      /* Desktop: 88vh tall, width from aspect ratio (2:3) */
+      height: 88vh;
+      width: calc(88vh * 2 / 3);
     }
     canvas {
       display: block;
@@ -113,14 +113,13 @@
       image-rendering: crisp-edges;
     }
 
-    /* ===== SIDE PANELS (desktop) ===== */
+    /* ===== SIDE PANELS ===== */
     .side-panel {
       position: relative; z-index: 5;
       display: flex; flex-direction: column;
       justify-content: center; align-items: center;
       padding: 0 40px; gap: 30px;
-      color: #c44dff;
-      text-align: center;
+      color: #c44dff; text-align: center;
     }
     .side-panel.left { align-items: flex-end; }
     .side-panel.right { align-items: flex-start; }
@@ -145,58 +144,133 @@
     }
     .side-controls {
       font-size: 7px; color: #9c27b0;
-      line-height: 2.4; opacity: 0.6;
-      text-align: left;
+      line-height: 2.4; opacity: 0.6; text-align: left;
     }
-    .side-controls span {
-      color: #ff6b9d; font-size: 8px;
-    }
+    .side-controls span { color: #ff6b9d; font-size: 8px; }
     .pixel-divider {
       width: 80px; height: 2px;
       background: linear-gradient(90deg, transparent, #c44dff, transparent);
       opacity: 0.4;
     }
 
-    /* ===== MOBILE: hide everything, just game ===== */
-    @media (max-width: 768px), (max-height: 500px) {
+    /* ===== MOBILE TOUCH CONTROLS ===== */
+    .mobile-controls {
+      display: none; /* hidden on desktop */
+    }
+
+    /* ===== MOBILE LAYOUT ===== */
+    @media (max-width: 768px), (pointer: coarse) and (max-width: 1024px) {
+      /* Hide desktop decorations */
       .desktop-bg, .stars-layer, .hearts-layer,
       .side-panel, .game-frame::before { display: none !important; }
+
       .desktop-wrapper {
+        flex-direction: column;
         background: #0d0221;
       }
       .game-frame {
         padding: 0; border-radius: 0;
         border: none; background: none;
         box-shadow: none;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
       }
-      #game-container { border-radius: 0; }
+      #game-container {
+        border-radius: 0;
+        /* Fill available width, height auto from aspect ratio */
+        width: 100vw;
+        height: calc(100vw * 3 / 2); /* 2:3 aspect ratio */
+        max-height: calc(100vh - 110px); /* Leave room for controls */
+        max-width: calc((100vh - 110px) * 2 / 3); /* Constrain width if height-limited */
+      }
+
+      /* Show mobile controls */
+      .mobile-controls {
+        display: flex;
+        position: relative; z-index: 100;
+        width: 100%;
+        height: 110px;
+        flex-shrink: 0;
+        background: linear-gradient(180deg, #1a0a2e, #0d0221);
+        border-top: 1px solid rgba(196, 77, 255, 0.2);
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 20px;
+      }
+      .ctrl-group {
+        display: flex; align-items: center; gap: 8px;
+      }
+      .ctrl-btn {
+        display: flex; align-items: center; justify-content: center;
+        border: 2px solid rgba(255, 107, 157, 0.4);
+        border-radius: 50%;
+        background: rgba(45, 27, 105, 0.6);
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 22px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        transition: background 0.1s, border-color 0.1s, transform 0.1s;
+      }
+      .ctrl-btn:active, .ctrl-btn.active {
+        background: rgba(255, 64, 129, 0.4);
+        border-color: #ff4081;
+        transform: scale(0.92);
+      }
+      .ctrl-dpad {
+        width: 64px; height: 64px;
+        font-size: 24px;
+      }
+      .ctrl-jump {
+        width: 80px; height: 80px;
+        font-size: 28px;
+        border-color: rgba(255, 64, 129, 0.5);
+        background: rgba(255, 64, 129, 0.15);
+      }
+      .ctrl-jump:active, .ctrl-jump.active {
+        background: rgba(255, 64, 129, 0.5);
+      }
+      .ctrl-label {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 6px;
+        color: rgba(196, 77, 255, 0.5);
+        text-align: center;
+        margin-top: 4px;
+      }
     }
 
     /* Medium screens: hide side panels, keep frame */
     @media (max-width: 1100px) and (min-width: 769px) {
       .side-panel { display: none; }
     }
+
+    /* Very small height (landscape phone): compact controls */
+    @media (max-height: 500px) {
+      .mobile-controls { height: 70px; padding: 4px 16px; }
+      .ctrl-dpad { width: 48px; height: 48px; font-size: 18px; }
+      .ctrl-jump { width: 60px; height: 60px; font-size: 22px; }
+      #game-container {
+        max-height: calc(100vh - 70px);
+        max-width: calc((100vh - 70px) * 2 / 3);
+      }
+    }
   </style>
 </head>
 <body>
   <div class="desktop-wrapper">
-    <!-- Animated background -->
+    <!-- Animated background (desktop only) -->
     <div class="desktop-bg"></div>
-
-    <!-- Stars -->
     <div class="stars-layer" id="stars"></div>
-
-    <!-- Floating hearts -->
     <div class="hearts-layer" id="hearts"></div>
 
-    <!-- Left panel -->
+    <!-- Left panel (desktop only) -->
     <div class="side-panel left">
       <div class="side-heart">💕</div>
       <div class="side-title">Love<br>Quest</div>
       <div class="pixel-divider"></div>
-      <div class="side-subtitle">
-        A retro adventure<br>of love
-      </div>
+      <div class="side-subtitle">A retro adventure<br>of love</div>
     </div>
 
     <!-- Game -->
@@ -204,7 +278,7 @@
       <div id="game-container"></div>
     </div>
 
-    <!-- Right panel -->
+    <!-- Right panel (desktop only) -->
     <div class="side-panel right">
       <div class="side-heart">✨</div>
       <div class="side-controls">
@@ -216,50 +290,103 @@
         hearts to advance!
       </div>
       <div class="pixel-divider"></div>
-      <div class="side-subtitle">
-        Collect hearts<br>
-        Avoid enemies<br>
-        Find the message
-      </div>
+      <div class="side-subtitle">Collect hearts<br>Avoid enemies<br>Find the message</div>
       <div class="side-heart" style="font-size: 28px; animation-delay: 0.5s;">💝</div>
     </div>
   </div>
 
-  <!-- Generate stars & hearts via JS (no runtime cost, one-time DOM insert) -->
+  <!-- Mobile touch controls (hidden on desktop) -->
+  <div class="mobile-controls">
+    <div class="ctrl-group">
+      <div>
+        <div class="ctrl-btn ctrl-dpad" id="btn-left">◀</div>
+        <div class="ctrl-label">LEFT</div>
+      </div>
+      <div>
+        <div class="ctrl-btn ctrl-dpad" id="btn-right">▶</div>
+        <div class="ctrl-label">RIGHT</div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <div>
+        <div class="ctrl-btn ctrl-jump" id="btn-jump">▲</div>
+        <div class="ctrl-label">JUMP</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Initialize global mobile input + decorations -->
   <script>
+    // Global mobile input state (read by Phaser Player entity)
+    window.__mobileInput = { left: false, right: false, jump: false };
+
+    // Wire up touch controls with multi-touch support
+    function bindControl(id, key) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        window.__mobileInput[key] = true;
+        el.classList.add('active');
+      }, { passive: false });
+      el.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        window.__mobileInput[key] = false;
+        el.classList.remove('active');
+      }, { passive: false });
+      el.addEventListener('touchcancel', function() {
+        window.__mobileInput[key] = false;
+        el.classList.remove('active');
+      });
+      // Also handle mouse for testing on desktop
+      el.addEventListener('mousedown', function() {
+        window.__mobileInput[key] = true;
+        el.classList.add('active');
+      });
+      el.addEventListener('mouseup', function() {
+        window.__mobileInput[key] = false;
+        el.classList.remove('active');
+      });
+      el.addEventListener('mouseleave', function() {
+        window.__mobileInput[key] = false;
+        el.classList.remove('active');
+      });
+    }
+    bindControl('btn-left', 'left');
+    bindControl('btn-right', 'right');
+    bindControl('btn-jump', 'jump');
+
+    // Generate CSS stars
     (function() {
-      // Stars
-      const starsEl = document.getElementById('stars');
-      for (let i = 0; i < 80; i++) {
-        const s = document.createElement('div');
+      var starsEl = document.getElementById('stars');
+      for (var i = 0; i < 80; i++) {
+        var s = document.createElement('div');
         s.className = 'star';
-        const size = Math.random() * 2.5 + 1;
-        s.style.cssText = `
-          width:${size}px; height:${size}px;
-          left:${Math.random()*100}%; top:${Math.random()*100}%;
-          --duration:${1.5+Math.random()*3}s;
-          --delay:${Math.random()*4}s;
-          --min-opacity:${0.15+Math.random()*0.35};
-        `;
+        var size = Math.random() * 2.5 + 1;
+        s.style.cssText =
+          'width:'+size+'px;height:'+size+'px;'+
+          'left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;'+
+          '--duration:'+(1.5+Math.random()*3)+'s;'+
+          '--delay:'+Math.random()*4+'s;'+
+          '--min-opacity:'+(0.15+Math.random()*0.35)+';';
         starsEl.appendChild(s);
       }
       // Floating hearts
-      const heartsEl = document.getElementById('hearts');
-      const symbols = ['♥','♥','💕','✦','♥','💗'];
-      const colors = ['#ff1744','#ff4081','#ff6b9d','#c44dff','#e91e63','#f48fb1'];
-      for (let i = 0; i < 18; i++) {
-        const h = document.createElement('div');
+      var heartsEl = document.getElementById('hearts');
+      var symbols = ['♥','♥','💕','✦','♥','💗'];
+      var colors = ['#ff1744','#ff4081','#ff6b9d','#c44dff','#e91e63','#f48fb1'];
+      for (var i = 0; i < 18; i++) {
+        var h = document.createElement('div');
         h.className = 'floating-heart';
         h.textContent = symbols[i % symbols.length];
-        h.style.cssText = `
-          left:${Math.random()*100}%;
-          --size:${10+Math.random()*18}px;
-          --color:${colors[i % colors.length]};
-          --duration:${8+Math.random()*12}s;
-          --delay:${Math.random()*15}s;
-          --max-opacity:${0.15+Math.random()*0.25};
-          --rotation:${-30+Math.random()*60}deg;
-        `;
+        h.style.cssText =
+          'left:'+Math.random()*100+'%;'+
+          '--size:'+(10+Math.random()*18)+'px;'+
+          '--color:'+colors[i % colors.length]+';'+
+          '--duration:'+(8+Math.random()*12)+'s;'+
+          '--delay:'+Math.random()*15+'s;'+
+          '--max-opacity:'+(0.15+Math.random()*0.25)+';'+
+          '--rotation:'+(-30+Math.random()*60)+'deg;';
         heartsEl.appendChild(h);
       }
     })();

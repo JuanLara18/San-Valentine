@@ -1,6 +1,11 @@
 import Phaser from 'phaser';
 import { gameConfig } from '../config/game.config';
-import { isMobileDevice } from '../utils/helpers';
+
+/** Global mobile input state set by HTML touch controls */
+interface MobileInput { left: boolean; right: boolean; jump: boolean }
+declare global {
+  interface Window { __mobileInput?: MobileInput; }
+}
 
 export class Player {
   public sprite: Phaser.Physics.Arcade.Sprite;
@@ -10,8 +15,6 @@ export class Player {
   private scene: Phaser.Scene;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys | null = null;
   private wasd: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key } | null = null;
-  private mobileControls = { left: false, right: false, jump: false };
-  private touchButtons: Phaser.GameObjects.Image[] = [];
 
   // --- Advanced platformer feel ---
   /** Timestamp of last time the player was on solid ground */
@@ -46,52 +49,6 @@ export class Player {
         right: scene.input.keyboard.addKey('D'),
       };
     }
-
-    // Mobile controls
-    if (isMobileDevice()) {
-      this.setupMobileControls();
-    }
-  }
-
-  private setupMobileControls(): void {
-    const { width, height } = gameConfig;
-    const padding = 16;
-    const bottomY = height - 40;
-
-    // Left arrow
-    const leftBtn = this.scene.add.image(padding + 24, bottomY, 'arrow-left')
-      .setInteractive()
-      .setScrollFactor(0)
-      .setDepth(100)
-      .setAlpha(0.6);
-
-    leftBtn.on('pointerdown', () => { this.mobileControls.left = true; });
-    leftBtn.on('pointerup', () => { this.mobileControls.left = false; });
-    leftBtn.on('pointerout', () => { this.mobileControls.left = false; });
-
-    // Right arrow
-    const rightBtn = this.scene.add.image(padding + 80, bottomY, 'arrow-right')
-      .setInteractive()
-      .setScrollFactor(0)
-      .setDepth(100)
-      .setAlpha(0.6);
-
-    rightBtn.on('pointerdown', () => { this.mobileControls.right = true; });
-    rightBtn.on('pointerup', () => { this.mobileControls.right = false; });
-    rightBtn.on('pointerout', () => { this.mobileControls.right = false; });
-
-    // Jump button
-    const jumpBtn = this.scene.add.image(width - padding - 28, bottomY, 'jump-button')
-      .setInteractive()
-      .setScrollFactor(0)
-      .setDepth(100)
-      .setAlpha(0.6);
-
-    jumpBtn.on('pointerdown', () => { this.mobileControls.jump = true; });
-    jumpBtn.on('pointerup', () => { this.mobileControls.jump = false; });
-    jumpBtn.on('pointerout', () => { this.mobileControls.jump = false; });
-
-    this.touchButtons = [leftBtn, rightBtn, jumpBtn];
   }
 
   update(): void {
@@ -100,9 +57,11 @@ export class Player {
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
     const now = this.scene.time.now;
 
-    const isLeft = this.cursors?.left.isDown || this.wasd?.left.isDown || this.mobileControls.left;
-    const isRight = this.cursors?.right.isDown || this.wasd?.right.isDown || this.mobileControls.right;
-    const isJump = this.cursors?.up.isDown || this.wasd?.up.isDown || this.mobileControls.jump;
+    // Read from keyboard AND global HTML touch controls
+    const touch = window.__mobileInput;
+    const isLeft = this.cursors?.left.isDown || this.wasd?.left.isDown || touch?.left;
+    const isRight = this.cursors?.right.isDown || this.wasd?.right.isDown || touch?.right;
+    const isJump = this.cursors?.up.isDown || this.wasd?.up.isDown || touch?.jump;
 
     // --- Grounded state tracking ---
     const isOnGround = body.blocked.down || body.touching.down;
@@ -205,7 +164,6 @@ export class Player {
   }
 
   destroy(): void {
-    this.touchButtons.forEach(btn => btn.destroy());
     this.sprite.destroy();
   }
 }

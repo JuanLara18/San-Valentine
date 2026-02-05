@@ -115,7 +115,7 @@ export const levels: LevelData[] = [
       { x: 50, y: 570 },
       { x: 330, y: 440 },
       { x: 220, y: 245 },
-      { x: 200, y: 50 },
+      { x: 250, y: 115 },  // Between last two platforms, before goal zone
     ],
     enemies: [],
   },
