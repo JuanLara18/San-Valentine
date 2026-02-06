@@ -51,7 +51,7 @@ export class NameScene extends Phaser.Scene {
     });
 
     // Question text
-    const questionText = this.add.text(cx, 220, t('name.askName'), {
+    this.add.text(cx, 220, t('name.askName'), {
       fontFamily: gameConfig.ui.fontFamily,
       fontSize: '12px',
       color: '#ff6b9d',
@@ -74,11 +74,22 @@ export class NameScene extends Phaser.Scene {
     confirmBtn.on('pointerout', () => { confirmBtn.setScale(0.8); confirmText.setScale(1); });
     confirmBtn.on('pointerdown', () => { confirmBtn.setScale(0.75); confirmText.setScale(0.95); });
     confirmBtn.on('pointerup', () => {
-      const name = this.inputElement?.value?.trim() || 'Player';
-      this.registry.set(REGISTRY.PLAYER_NAME, name);
-      this.removeInput();
-      this.showNicknameQuestion(name);
+      this.handleNameSubmit();
     });
+  }
+
+  private handleNameSubmit(): void {
+    const name = this.inputElement?.value?.trim() || 'Player';
+    this.registry.set(REGISTRY.PLAYER_NAME, name);
+    this.removeInput();
+
+    // Check if the player entered the nickname directly
+    if (name.toLowerCase() === valentineConfig.nickname.toLowerCase()) {
+      this.registry.set(REGISTRY.NICKNAME, valentineConfig.nickname);
+      this.showNicknameDetected(name);
+    } else {
+      this.showNicknameQuestion(name);
+    }
   }
 
   private createNameInput(x: number, y: number): void {
@@ -116,10 +127,7 @@ export class NameScene extends Phaser.Scene {
     // Handle enter key
     this.inputElement.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        const name = this.inputElement?.value?.trim() || 'Player';
-        this.registry.set(REGISTRY.PLAYER_NAME, name);
-        this.removeInput();
-        this.showNicknameQuestion(name);
+        this.handleNameSubmit();
       }
     });
   }
@@ -131,9 +139,88 @@ export class NameScene extends Phaser.Scene {
     }
   }
 
-  private showNicknameQuestion(name: string): void {
+  /** Player typed the nickname as their name - skip nickname question */
+  private showNicknameDetected(name: string): void {
+    const { width } = gameConfig;
+    const cx = width / 2;
+
+    // Clear previous elements with fade
+    this.tweens.add({
+      targets: this.children.list.filter(c => c.type === 'Text' || c.type === 'Image'),
+      alpha: 0,
+      duration: 400,
+      onComplete: () => {
+        this.children.removeAll(true);
+        this.buildNicknameDetectedScreen(name);
+      },
+    });
+  }
+
+  private buildNicknameDetectedScreen(name: string): void {
     const { width, height } = gameConfig;
     const cx = width / 2;
+
+    // Background
+    const bg = this.add.graphics();
+    bg.fillGradientStyle(0x1a0a2e, 0x2d1b69, 0x1a0a2e, 0x2d1b69);
+    bg.fillRect(0, 0, width, height);
+
+    // Stars
+    for (let i = 0; i < 15; i++) {
+      const star = this.add.image(
+        Phaser.Math.Between(0, width),
+        Phaser.Math.Between(0, height),
+        'star'
+      ).setAlpha(Phaser.Math.FloatBetween(0.2, 0.6));
+      this.tweens.add({
+        targets: star,
+        alpha: 0.1,
+        duration: Phaser.Math.Between(1000, 2500),
+        yoyo: true,
+        repeat: -1,
+      });
+    }
+
+    // Cupid surprised
+    const cupid = this.add.image(cx, 180, 'player', 0).setScale(3).setAlpha(0);
+    this.tweens.add({
+      targets: cupid,
+      y: 170,
+      duration: 1200,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+
+    // Playful reaction message
+    const message = this.add.text(cx, 280, t('name.nicknameDetected'), {
+      fontFamily: gameConfig.ui.fontFamily,
+      fontSize: '11px',
+      color: '#ff6b9d',
+      wordWrap: { width: width - 50 },
+      align: 'center',
+      lineSpacing: 8,
+    }).setOrigin(0.5).setAlpha(0);
+
+    // Animate entrance
+    this.tweens.add({ targets: cupid, alpha: 1, duration: 600, delay: 200 });
+    this.tweens.add({
+      targets: message,
+      alpha: 1,
+      duration: 800,
+      delay: 600,
+      onComplete: () => {
+        // Spawn floating hearts
+        this.spawnFloatingHearts(cx, 280, 12);
+
+        // Proceed after a moment
+        this.time.delayedCall(2500, () => this.proceedToStory());
+      },
+    });
+  }
+
+  private showNicknameQuestion(name: string): void {
+    const { width } = gameConfig;
 
     // Clear previous elements with fade
     this.tweens.add({
@@ -172,8 +259,9 @@ export class NameScene extends Phaser.Scene {
       });
     }
 
-    // Greeting
-    const greeting = this.add.text(cx, 100, `¡Hola, ${name}!`, {
+    // Greeting (now using i18n)
+    const greetingText = t('name.greeting').replace('{name}', name);
+    const greeting = this.add.text(cx, 100, greetingText, {
       fontFamily: gameConfig.ui.fontFamily,
       fontSize: '14px',
       color: '#ffffff',
@@ -191,8 +279,7 @@ export class NameScene extends Phaser.Scene {
     });
 
     // Nickname question
-    const nickQ = t('name.nicknameAsk').replace('{nickname}', valentineConfig.nickname);
-    const question = this.add.text(cx, 280, nickQ, {
+    const question = this.add.text(cx, 280, t('name.nicknameAsk'), {
       fontFamily: gameConfig.ui.fontFamily,
       fontSize: '11px',
       color: '#ff6b9d',
@@ -224,13 +311,46 @@ export class NameScene extends Phaser.Scene {
 
     // Button handlers
     yesBtn.on('pointerup', () => {
+      yesBtn.disableInteractive();
+      noBtn.disableInteractive();
       this.registry.set(REGISTRY.NICKNAME, valentineConfig.nickname);
-      this.proceedToStory();
+
+      // Fade out buttons and question
+      this.tweens.add({
+        targets: [yesBtn, yesText, noBtn, noText, question],
+        alpha: 0,
+        duration: 300,
+      });
+
+      // Show accepted message with hearts
+      const accepted = this.add.text(cx, 280, t('name.nicknameAccepted'), {
+        fontFamily: gameConfig.ui.fontFamily,
+        fontSize: '10px',
+        color: '#ff6b9d',
+        wordWrap: { width: width - 50 },
+        align: 'center',
+      }).setOrigin(0.5).setAlpha(0);
+
+      this.tweens.add({
+        targets: accepted,
+        alpha: 1,
+        duration: 500,
+        delay: 400,
+        onComplete: () => {
+          // Spawn floating hearts
+          this.spawnFloatingHearts(cx, 280, 10);
+
+          // Proceed after a moment
+          this.time.delayedCall(2000, () => this.proceedToStory());
+        },
+      });
     });
 
     noBtn.on('pointerup', () => {
-      // Fun: "No" doesn't really work - show funny message then proceed
+      yesBtn.disableInteractive();
+      noBtn.disableInteractive();
       this.registry.set(REGISTRY.NICKNAME, valentineConfig.nickname);
+
       const anyway = this.add.text(cx, 430, t('name.nicknameAnyway'), {
         fontFamily: gameConfig.ui.fontFamily,
         fontSize: '8px',
@@ -255,6 +375,39 @@ export class NameScene extends Phaser.Scene {
       btn.on('pointerout', () => btn.setScale(0.6));
       btn.on('pointerdown', () => btn.setScale(0.55));
     });
+  }
+
+  /** Spawn floating heart particles around a position */
+  private spawnFloatingHearts(cx: number, cy: number, count: number): void {
+    for (let i = 0; i < count; i++) {
+      const heart = this.add.text(
+        cx + Phaser.Math.Between(-80, 80),
+        cy + Phaser.Math.Between(-20, 20),
+        '♥',
+        {
+          fontSize: `${Phaser.Math.Between(10, 18)}px`,
+          color: Phaser.Math.Between(0, 1) === 0 ? '#ff4081' : '#ff6b9d',
+        }
+      ).setOrigin(0.5).setAlpha(0);
+
+      this.tweens.add({
+        targets: heart,
+        alpha: { from: 0, to: 0.8 },
+        y: heart.y - Phaser.Math.Between(60, 120),
+        x: heart.x + Phaser.Math.Between(-30, 30),
+        duration: Phaser.Math.Between(1000, 2000),
+        delay: i * 80,
+        ease: 'Sine.easeOut',
+        onComplete: () => {
+          this.tweens.add({
+            targets: heart,
+            alpha: 0,
+            duration: 400,
+            onComplete: () => heart.destroy(),
+          });
+        },
+      });
+    }
   }
 
   private proceedToStory(): void {

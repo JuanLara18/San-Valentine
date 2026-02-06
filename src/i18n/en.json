@@ -20,34 +20,41 @@
     "askName": "What's your name?",
     "placeholder": "Your name...",
     "confirm": "OK",
+    "greeting": "Hi, {name}!",
     "nicknameAsk": "Can I call you {nickname}?",
+    "nicknameDetected": "Hey! That's MY name for you, cheater",
+    "nicknameAccepted": "Perfect! That's more like it, {nickname}",
     "yes": "Yes!",
     "no": "Hmm...",
-    "nicknameAnyway": "I'll call you {nickname} anyway! 💕"
+    "nicknameAnyway": "I'll call you {nickname} anyway!"
   },
   "story": {
+    "tapToContinue": "Tap to continue",
     "intro": [
-      "In a world of pink clouds...",
-      "a little Cupid searches for",
-      "the perfect gift of love.",
-      "Help collect all the hearts,",
+      "They say in the highest clouds...",
+      "lives a little Cupid",
+      "with a very important mission.",
+      "Someone special deserves to know",
+      "what their heart truly feels...",
+      "Help him collect every heartbeat,",
       "{nickname}!"
     ],
     "level1Complete": [
-      "Great job, {nickname}!",
-      "You found the first heartbeats.",
-      "But the path gets harder..."
+      "Not bad at all, {nickname}!",
+      "You gathered the first heartbeats",
+      "and Cupid is smiling ear to ear.",
+      "But don't celebrate just yet...",
+      "A storm is coming",
+      "and the hearts are scattered."
     ],
     "level2Complete": [
-      "Amazing, {nickname}!",
-      "Not even storms can stop you.",
-      "One last challenge remains..."
-    ],
-    "finalIntro": [
-      "This is the moment, {nickname}.",
-      "The grand gesture of love",
-      "awaits you at the end.",
-      "You can do it! 💕"
+      "Incredible, {nickname}!",
+      "Neither thunder nor lightning",
+      "could stop you.",
+      "Cupid is impressed...",
+      "Only one test remains,",
+      "the most important of all.",
+      "Are you ready?"
     ]
   },
   "game": {

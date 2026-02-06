@@ -88,12 +88,12 @@ export class StoryScene extends Phaser.Scene {
       ease: 'Sine.easeInOut',
     });
 
-    // Dialog box area
+    // Dialog box area (taller to fit up to 7 lines)
     const dialogBg = this.add.graphics();
     dialogBg.fillStyle(0x2d1b69, 0.7);
-    dialogBg.fillRoundedRect(20, 260, width - 40, 200, 8);
+    dialogBg.fillRoundedRect(20, 250, width - 40, 220, 8);
     dialogBg.lineStyle(2, 0xff6b9d, 0.8);
-    dialogBg.strokeRoundedRect(20, 260, width - 40, 200, 8);
+    dialogBg.strokeRoundedRect(20, 250, width - 40, 220, 8);
 
     // Start showing lines
     this.showNextLine();
@@ -110,8 +110,8 @@ export class StoryScene extends Phaser.Scene {
       this.showNextLine();
     });
 
-    // "Tap to continue" hint
-    const hint = this.add.text(cx, 500, '▼ Tap to continue ▼', {
+    // "Tap to continue" hint (i18n)
+    const hint = this.add.text(cx, 500, `▼ ${t('story.tapToContinue')} ▼`, {
       fontFamily: gameConfig.ui.fontFamily,
       fontSize: '7px',
       color: '#9c27b0',
@@ -135,7 +135,7 @@ export class StoryScene extends Phaser.Scene {
     const { width } = gameConfig;
     const cx = width / 2;
     const line = this.lines[this.currentLine];
-    const yPos = 285 + this.currentLine * 30;
+    const yPos = 270 + this.currentLine * 27;
 
     this.isAnimating = true;
 

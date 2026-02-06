@@ -480,14 +480,16 @@ export class GameScene extends Phaser.Scene {
           // Game won!
           this.scene.start(SCENES.VICTORY);
         } else {
-          // Next level story
-          const storyKeys = ['level1Complete', 'level2Complete'];
-          const storyKey = storyKeys[this.currentLevel - 1] || 'level1Complete';
+          // Next level story - always show the completion story for current level
+          const storyKeys: Record<number, string> = {
+            1: 'level1Complete',
+            2: 'level2Complete',
+          };
           const nextLevel = this.currentLevel + 1;
-          const nextStoryKey = nextLevel === gameConfig.levels.totalLevels ? 'finalIntro' : storyKey;
+          const storyKey = storyKeys[this.currentLevel] || 'level1Complete';
 
           this.scene.start(SCENES.STORY, {
-            storyKey: nextStoryKey,
+            storyKey,
             nextScene: SCENES.GAME,
             level: nextLevel,
           });

@@ -20,35 +20,41 @@
     "askName": "¿Cómo te llamas?",
     "placeholder": "Tu nombre...",
     "confirm": "OK",
+    "greeting": "¡Hola, {name}!",
     "nicknameAsk": "¿Te puedo decir {nickname}?",
+    "nicknameDetected": "¡Ey! Ese es MI nombre para ti, tramposa",
+    "nicknameAccepted": "¡Perfecto! Así me gusta, {nickname}",
     "yes": "¡Sí!",
     "no": "Mmm...",
-    "nicknameAnyway": "¡Te voy a decir {nickname} de todas formas! 💕"
+    "nicknameAnyway": "¡Te voy a decir {nickname} de todas formas!"
   },
   "story": {
+    "tapToContinue": "Toca para continuar",
     "intro": [
-      "En un mundo de nubes rosadas...",
-      "un pequeño Cupido busca",
-      "el regalo perfecto de amor.",
-      "¡Ayúdale a recolectar",
-      "todos los corazones, {nickname}!"
+      "Dicen que en las nubes más altas...",
+      "vive un pequeño Cupido",
+      "con una misión muy importante.",
+      "Alguien especial merece saber",
+      "lo que siente su corazón...",
+      "¡Ayúdalo a recoger cada latido,",
+      "{nickname}!"
     ],
     "level1Complete": [
-      "¡Muy bien, {nickname}!",
-      "Has encontrado los primeros latidos.",
-      "Pero el camino se pone",
-      "más difícil..."
+      "¡Nada mal, {nickname}!",
+      "Has reunido los primeros latidos",
+      "y Cupido sonríe de oreja a oreja.",
+      "Pero no cantes victoria aún...",
+      "Una tormenta se acerca",
+      "y los corazones están dispersos."
     ],
     "level2Complete": [
       "¡Increíble, {nickname}!",
-      "Ni las tormentas te detienen.",
-      "Falta una última prueba..."
-    ],
-    "finalIntro": [
-      "Este es el momento, {nickname}.",
-      "El gran gesto de amor",
-      "te espera al final.",
-      "¡Tú puedes! 💕"
+      "Ni truenos ni relámpagos",
+      "pudieron detenerte.",
+      "Cupido está impresionado...",
+      "Solo queda una prueba más,",
+      "la más importante de todas.",
+      "¿Estás lista?"
     ]
   },
   "game": {
