@@ -2,6 +2,7 @@
  * Procedural Audio Manager
  * Generates all music and SFX using Web Audio API.
  * No external audio files needed - everything is synthesized.
+ * Uses per-track gain nodes for smooth crossfade transitions.
  */
 
 type TrackName = 'menu' | 'game' | 'storm' | 'victory' | 'none';
@@ -21,10 +22,15 @@ interface MelodyNote {
   rest?: boolean;   // silent note
 }
 
+// Crossfade timing (seconds)
+const FADE_OUT_DURATION = 0.8;
+const FADE_IN_DURATION = 1.4;
+
 export class AudioManager {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
-  private musicGain: GainNode | null = null;
+  /** Active gain node for the currently-playing music track */
+  private activeMusicGain: GainNode | null = null;
   private sfxGain: GainNode | null = null;
   private currentTrack: TrackName = 'none';
   private musicTimers: number[] = [];
@@ -40,10 +46,6 @@ export class AudioManager {
       this.masterGain = this.ctx.createGain();
       this.masterGain.gain.value = 0.3;
       this.masterGain.connect(this.ctx.destination);
-
-      this.musicGain = this.ctx.createGain();
-      this.musicGain.gain.value = 0.4;
-      this.musicGain.connect(this.masterGain);
 
       this.sfxGain = this.ctx.createGain();
       this.sfxGain.gain.value = 0.6;
@@ -67,18 +69,20 @@ export class AudioManager {
   // ===========================
 
   playTrack(track: TrackName): void {
-    if (!this.initialized || !this.ctx || this.isMuted) return;
+    if (!this.initialized || !this.ctx || !this.masterGain || this.isMuted) return;
     if (this.currentTrack === track) return;
 
-    this.stopMusic();
+    // Crossfade: fade out old track on its own gain node
+    this.fadeOutCurrentMusic();
+
     this.currentTrack = track;
     this.isPlaying = true;
 
-    // Fade in
-    if (this.musicGain) {
-      this.musicGain.gain.setValueAtTime(0, this.ctx.currentTime);
-      this.musicGain.gain.linearRampToValueAtTime(0.4, this.ctx.currentTime + 1);
-    }
+    // Create a fresh gain node for the new track (enables true crossfade)
+    this.activeMusicGain = this.ctx.createGain();
+    this.activeMusicGain.gain.setValueAtTime(0, this.ctx.currentTime);
+    this.activeMusicGain.gain.linearRampToValueAtTime(0.4, this.ctx.currentTime + FADE_IN_DURATION);
+    this.activeMusicGain.connect(this.masterGain);
 
     switch (track) {
       case 'menu': this.playMenuMusic(); break;
@@ -88,15 +92,38 @@ export class AudioManager {
     }
   }
 
-  stopMusic(): void {
+  /**
+   * Fade out the currently-playing music on its own gain node.
+   * Old oscillators continue through the fading gain and become silent,
+   * then the node is disconnected to free resources.
+   */
+  private fadeOutCurrentMusic(): void {
+    // Cancel future loop iterations
     this.musicTimers.forEach(t => clearTimeout(t));
     this.musicTimers = [];
+
+    if (this.activeMusicGain && this.ctx) {
+      const oldGain = this.activeMusicGain;
+      const now = this.ctx.currentTime;
+
+      // Cancel any in-progress ramps and start a clean fade-out
+      oldGain.gain.cancelScheduledValues(now);
+      oldGain.gain.setValueAtTime(oldGain.gain.value, now);
+      oldGain.gain.linearRampToValueAtTime(0, now + FADE_OUT_DURATION);
+
+      // Disconnect the old gain node after the fade completes
+      setTimeout(() => {
+        try { oldGain.disconnect(); } catch { /* already disconnected */ }
+      }, (FADE_OUT_DURATION + 0.3) * 1000);
+    }
+
+    this.activeMusicGain = null;
+  }
+
+  stopMusic(): void {
+    this.fadeOutCurrentMusic();
     this.isPlaying = false;
     this.currentTrack = 'none';
-    if (this.musicGain && this.ctx) {
-      this.musicGain.gain.setValueAtTime(this.musicGain.gain.value, this.ctx.currentTime);
-      this.musicGain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.3);
-    }
   }
 
   toggleMute(): boolean {
@@ -112,6 +139,8 @@ export class AudioManager {
   }
 
   get muted(): boolean { return this.isMuted; }
+
+  get track(): TrackName { return this.currentTrack; }
 
   // --- Menu: Gentle dreamy arpeggio ---
   private playMenuMusic(): void {
@@ -197,35 +226,41 @@ export class AudioManager {
     this.loopMelody(melody, 0.22, 'triangle', 130);
   }
 
-  /** Play a melody in loop */
+  /**
+   * Play a melody in loop.
+   * Captures the current activeMusicGain reference so that if the track
+   * changes mid-loop, the old loop self-terminates gracefully.
+   */
   private loopMelody(
     melody: MelodyNote[],
     volume: number,
     wave: OscillatorType,
     bpm: number
   ): void {
-    if (!this.ctx || !this.musicGain) return;
+    if (!this.ctx || !this.activeMusicGain) return;
 
+    // Capture the gain node for THIS track instance
+    const trackGain = this.activeMusicGain;
     const beatDuration = 60 / bpm;
-    let time = this.ctx.currentTime + 0.1;
 
     const playOnce = () => {
-      if (!this.isPlaying || !this.ctx || !this.musicGain) return;
+      // Stop looping if track was changed (gain node replaced)
+      if (!this.isPlaying || !this.ctx || trackGain !== this.activeMusicGain) return;
 
       let localTime = this.ctx.currentTime + 0.1;
 
       melody.forEach(note => {
         const dur = note.duration * beatDuration;
         if (!note.rest && note.freq > 0) {
-          this.playTone(note.freq, localTime, dur * 0.85, volume, wave, this.musicGain!);
+          this.playTone(note.freq, localTime, dur * 0.85, volume, wave, trackGain);
         }
         localTime += dur;
       });
 
-      // Schedule next loop
+      // Schedule next loop iteration
       const totalDuration = melody.reduce((sum, n) => sum + n.duration * beatDuration, 0);
       const timer = window.setTimeout(() => {
-        if (this.isPlaying) playOnce();
+        if (this.isPlaying && trackGain === this.activeMusicGain) playOnce();
       }, totalDuration * 1000);
       this.musicTimers.push(timer);
     };
@@ -233,7 +268,7 @@ export class AudioManager {
     playOnce();
   }
 
-  /** Play a single tone */
+  /** Play a single tone through a destination node */
   private playTone(
     freq: number,
     startTime: number,

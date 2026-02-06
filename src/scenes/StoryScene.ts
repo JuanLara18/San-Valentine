@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { SCENES } from '../utils/constants';
 import { gameConfig } from '../config/game.config';
 import { tArray, t } from '../i18n';
+import { audioManager } from '../systems/AudioManager';
 
 interface StoryData {
   storyKey: string;
@@ -32,6 +33,9 @@ export class StoryScene extends Phaser.Scene {
     const cx = width / 2;
 
     this.cameras.main.fadeIn(500);
+
+    // Gentle narrative music (crossfades smoothly from previous track)
+    audioManager.playTrack('menu');
 
     // Background
     const bg = this.add.graphics();
