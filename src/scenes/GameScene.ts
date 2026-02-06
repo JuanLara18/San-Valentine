@@ -537,19 +537,19 @@ export class GameScene extends Phaser.Scene {
   private createHUD(): void {
     const ui = gameConfig.ui;
 
-    const livesText = this.add.text(10, 10, '', {
+    const livesText = this.add.text(10, 16, '', {
       fontFamily: ui.fontFamily,
       fontSize: '8px',
       color: '#ff4081',
     }).setScrollFactor(0).setDepth(100);
 
-    const heartsText = this.add.text(10, 28, '', {
+    const heartsText = this.add.text(10, 34, '', {
       fontFamily: ui.fontFamily,
       fontSize: '8px',
       color: '#ff1744',
     }).setScrollFactor(0).setDepth(100);
 
-    const levelText = this.add.text(gameConfig.width - 10, 10, '', {
+    const levelText = this.add.text(gameConfig.width - 10, 16, '', {
       fontFamily: ui.fontFamily,
       fontSize: '8px',
       color: '#c44dff',
