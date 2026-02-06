@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { gameConfig } from './config/game.config';
-import { initI18n } from './i18n';
+import { initI18n, updateHtmlTranslations } from './i18n';
 import { BootScene } from './scenes/BootScene';
 import { MenuScene } from './scenes/MenuScene';
 import { NameScene } from './scenes/NameScene';
@@ -11,6 +11,7 @@ import { REGISTRY } from './utils/constants';
 
 async function launch() {
   await initI18n();
+  updateHtmlTranslations();
 
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,

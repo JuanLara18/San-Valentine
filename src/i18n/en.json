@@ -5,6 +5,17 @@
     "play": "Play",
     "language": "Language"
   },
+  "html": {
+    "sideSubtitle": "A retro adventure\nof love",
+    "ctrlMove": "Move",
+    "ctrlJump": "Jump",
+    "ctrlWallJump": "Wall Jump",
+    "ctrlHint": "Collect all the\nhearts to advance!",
+    "sideHint": "Collect hearts\nAvoid enemies\nFind the message",
+    "mobileLeft": "LEFT",
+    "mobileRight": "RIGHT",
+    "mobileJump": "JUMP"
+  },
   "name": {
     "askName": "What's your name?",
     "placeholder": "Your name...",

@@ -275,7 +275,7 @@
       <div class="side-heart">💕</div>
       <div class="side-title">Love<br>Quest</div>
       <div class="pixel-divider"></div>
-      <div class="side-subtitle">Una aventura<br>retro de amor</div>
+      <div class="side-subtitle" data-i18n="html.sideSubtitle">Una aventura<br>retro de amor</div>
     </div>
 
     <!-- Game -->
@@ -286,16 +286,15 @@
     <!-- Right panel (desktop only) -->
     <div class="side-panel right">
       <div class="side-heart">✨</div>
-      <div class="side-controls">
-        <span>←→</span> Mover<br>
-        <span> ↑ </span> Saltar<br>
-        <span> W </span> Salto en pared<br>
+      <div class="side-controls" id="side-controls">
+        <span>←→</span> <span data-i18n="html.ctrlMove">Mover</span><br>
+        <span> ↑ </span> <span data-i18n="html.ctrlJump">Saltar</span><br>
+        <span> W </span> <span data-i18n="html.ctrlWallJump">Salto en pared</span><br>
         <br>
-        ¡Recoge todos los<br>
-        corazones para avanzar!
+        <span data-i18n-html="html.ctrlHint">¡Recoge todos los<br>corazones para avanzar!</span>
       </div>
       <div class="pixel-divider"></div>
-      <div class="side-subtitle">Recoge corazones<br>Evita enemigos<br>Encuentra el mensaje</div>
+      <div class="side-subtitle" data-i18n-html="html.sideHint">Recoge corazones<br>Evita enemigos<br>Encuentra el mensaje</div>
       <div class="side-heart" style="font-size: 28px; animation-delay: 0.5s;">💝</div>
     </div>
   </div>
@@ -305,17 +304,17 @@
     <div class="ctrl-group">
       <div>
         <div class="ctrl-btn ctrl-dpad" id="btn-left">◀</div>
-        <div class="ctrl-label">IZQ</div>
+        <div class="ctrl-label" data-i18n="html.mobileLeft">IZQ</div>
       </div>
       <div>
         <div class="ctrl-btn ctrl-dpad" id="btn-right">▶</div>
-        <div class="ctrl-label">DER</div>
+        <div class="ctrl-label" data-i18n="html.mobileRight">DER</div>
       </div>
     </div>
     <div class="ctrl-group">
       <div>
         <div class="ctrl-btn ctrl-jump" id="btn-jump">▲</div>
-        <div class="ctrl-label">SALTAR</div>
+        <div class="ctrl-label" data-i18n="html.mobileJump">SALTAR</div>
       </div>
     </div>
   </div>

@@ -5,6 +5,17 @@
     "play": "Jugar",
     "language": "Idioma"
   },
+  "html": {
+    "sideSubtitle": "Una aventura\nretro de amor",
+    "ctrlMove": "Mover",
+    "ctrlJump": "Saltar",
+    "ctrlWallJump": "Salto en pared",
+    "ctrlHint": "¡Recoge todos los\ncorazones para avanzar!",
+    "sideHint": "Recoge corazones\nEvita enemigos\nEncuentra el mensaje",
+    "mobileLeft": "IZQ",
+    "mobileRight": "DER",
+    "mobileJump": "SALTAR"
+  },
   "name": {
     "askName": "¿Cómo te llamas?",
     "placeholder": "Tu nombre...",
