@@ -48,8 +48,8 @@ export class VictoryScene extends Phaser.Scene {
     // Phase 1: Hearts falling like confetti (start immediately)
     this.startHeartRain();
 
-    // Phase 2: Envelope slides in (after 2 seconds)
-    this.time.delayedCall(2000, () => this.showEnvelope());
+    // Phase 2: Narrative reveal - hearts come together to form the message
+    this.time.delayedCall(1500, () => this.showNarrativeReveal());
   }
 
   private startHeartRain(): void {
@@ -75,6 +75,57 @@ export class VictoryScene extends Phaser.Scene {
           onComplete: () => heart.destroy(),
         });
       },
+    });
+  }
+
+  private showNarrativeReveal(): void {
+    const { width } = gameConfig;
+    const cx = width / 2;
+
+    // "All the hearts come together..."
+    const revealText = this.add.text(cx, 180, t('victory.heartsReveal'), {
+      fontFamily: gameConfig.ui.fontFamily,
+      fontSize: '10px',
+      color: '#ff6b9d',
+      wordWrap: { width: width - 60 },
+      align: 'center',
+    }).setOrigin(0.5).setAlpha(0).setDepth(8);
+
+    this.tweens.add({
+      targets: revealText,
+      alpha: 1,
+      duration: 1200,
+      ease: 'Quad.easeOut',
+    });
+
+    // "The message is complete."
+    const completeText = this.add.text(cx, 230, t('victory.messageForming'), {
+      fontFamily: gameConfig.ui.fontFamily,
+      fontSize: '12px',
+      color: '#ffd700',
+      wordWrap: { width: width - 60 },
+      align: 'center',
+    }).setOrigin(0.5).setAlpha(0).setDepth(8);
+
+    this.tweens.add({
+      targets: completeText,
+      alpha: 1,
+      duration: 1000,
+      delay: 1800,
+    });
+
+    // Fade out narrative and show envelope
+    this.time.delayedCall(4000, () => {
+      this.tweens.add({
+        targets: [revealText, completeText],
+        alpha: 0,
+        duration: 600,
+        onComplete: () => {
+          revealText.destroy();
+          completeText.destroy();
+          this.showEnvelope();
+        },
+      });
     });
   }
 
@@ -196,17 +247,18 @@ export class VictoryScene extends Phaser.Scene {
     const cx = width / 2;
 
     const nickname = this.registry.get(REGISTRY.NICKNAME) || valentineConfig.nickname;
+    const letterIntro = t('victory.letterIntro');
     const message = valentineConfig.finalMessage;
-    const fullText = `${nickname},\n\n${message}`;
+    const fullText = `${nickname},\n\n${letterIntro}\n\n${message}`;
 
     // Create text object
-    const messageText = this.add.text(cx, 160, '', {
+    const messageText = this.add.text(cx, 120, '', {
       fontFamily: gameConfig.ui.fontFamily,
-      fontSize: '11px',
+      fontSize: '10px',
       color: '#4a0028',
-      wordWrap: { width: width - 100 },
+      wordWrap: { width: width - 90 },
       align: 'center',
-      lineSpacing: 12,
+      lineSpacing: 10,
     }).setOrigin(0.5, 0).setDepth(20);
 
     // Typewriter effect

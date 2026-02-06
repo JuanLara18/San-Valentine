@@ -33,28 +33,28 @@
     "intro": [
       "Dicen que en las nubes más altas...",
       "vive un pequeño Cupido",
-      "con una misión muy importante.",
-      "Alguien especial merece saber",
-      "lo que siente su corazón...",
-      "¡Ayúdalo a recoger cada latido,",
+      "que guarda un mensaje secreto.",
+      "Cada corazón que recojas",
+      "es una palabra de ese mensaje.",
+      "¡Ayúdalo a completarlo,",
       "{nickname}!"
     ],
     "level1Complete": [
-      "¡Nada mal, {nickname}!",
-      "Has reunido los primeros latidos",
-      "y Cupido sonríe de oreja a oreja.",
-      "Pero no cantes victoria aún...",
-      "Una tormenta se acerca",
-      "y los corazones están dispersos."
+      "¡Bien hecho, {nickname}!",
+      "Los primeros latidos",
+      "empiezan a formar algo...",
+      "¿Puedes sentirlo?",
+      "El mensaje está tomando forma.",
+      "Pero aún faltan piezas."
     ],
     "level2Complete": [
       "¡Increíble, {nickname}!",
-      "Ni truenos ni relámpagos",
-      "pudieron detenerte.",
-      "Cupido está impresionado...",
-      "Solo queda una prueba más,",
-      "la más importante de todas.",
-      "¿Estás lista?"
+      "Ni la peor tormenta",
+      "pudo borrar las palabras.",
+      "El mensaje casi está completo...",
+      "Solo falta el fragmento final:",
+      "el más importante de todos.",
+      "El que necesita valor."
     ]
   },
   "game": {
@@ -71,7 +71,10 @@
     "level3Name": "El Gran Gesto"
   },
   "victory": {
-    "tapToOpen": "Toca para abrir...",
+    "heartsReveal": "Todos los corazones se unen...",
+    "messageForming": "El mensaje está completo.",
+    "tapToOpen": "Toca para descubrirlo...",
+    "letterIntro": "Cada corazón que recogiste\ntenía una razón.",
     "yes": "¡Sí!",
     "yesObviously": "¡Obvio que sí!",
     "celebration": "¡¡¡Sabía que dirías que sí!!!",

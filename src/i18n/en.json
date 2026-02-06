@@ -33,28 +33,28 @@
     "intro": [
       "They say in the highest clouds...",
       "lives a little Cupid",
-      "with a very important mission.",
-      "Someone special deserves to know",
-      "what their heart truly feels...",
-      "Help him collect every heartbeat,",
+      "who guards a secret message.",
+      "Each heart you collect",
+      "is a word of that message.",
+      "Help him complete it,",
       "{nickname}!"
     ],
     "level1Complete": [
-      "Not bad at all, {nickname}!",
-      "You gathered the first heartbeats",
-      "and Cupid is smiling ear to ear.",
-      "But don't celebrate just yet...",
-      "A storm is coming",
-      "and the hearts are scattered."
+      "Well done, {nickname}!",
+      "The first heartbeats",
+      "are starting to form something...",
+      "Can you feel it?",
+      "The message is taking shape.",
+      "But pieces are still missing."
     ],
     "level2Complete": [
       "Incredible, {nickname}!",
-      "Neither thunder nor lightning",
-      "could stop you.",
-      "Cupid is impressed...",
-      "Only one test remains,",
+      "Not even the worst storm",
+      "could erase the words.",
+      "The message is almost complete...",
+      "Only the final fragment remains:",
       "the most important of all.",
-      "Are you ready?"
+      "The one that takes courage."
     ]
   },
   "game": {
@@ -71,7 +71,10 @@
     "level3Name": "The Grand Gesture"
   },
   "victory": {
-    "tapToOpen": "Tap to open...",
+    "heartsReveal": "All the hearts come together...",
+    "messageForming": "The message is complete.",
+    "tapToOpen": "Tap to discover it...",
+    "letterIntro": "Every heart you collected\nhad a reason.",
     "yes": "Yes!",
     "yesObviously": "Obviously yes!",
     "celebration": "I knew you'd say yes!!!",
