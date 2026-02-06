@@ -29,6 +29,7 @@ export class AssetGenerator {
     this.generateButton();
     this.generateArrowButtons();
     this.generateJumpButton();
+    this.generateGoalFlag();
   }
 
   /** Cupid character spritesheet - 4 frames: idle, run1, run2, jump */
@@ -377,6 +378,36 @@ export class AssetGenerator {
     g.fillTriangle(size / 2, size * 0.25, size * 0.3, size * 0.65, size * 0.7, size * 0.65);
 
     g.generateTexture('jump-button', size, size);
+    g.destroy();
+  }
+
+  /** Goal flag for level completion */
+  private generateGoalFlag(): void {
+    const g = this.scene.make.graphics({ x: 0, y: 0 });
+    const w = 24;
+    const h = 32;
+
+    // Pole
+    g.fillStyle(0xffffff);
+    g.fillRect(3, 0, 2, h);
+
+    // Flag (pink triangle/rectangle)
+    g.fillStyle(0xff4081);
+    g.fillRect(5, 2, 14, 10);
+
+    // Heart on flag
+    g.fillStyle(0xffffff);
+    g.fillRect(9, 4, 2, 2);
+    g.fillRect(13, 4, 2, 2);
+    g.fillRect(8, 6, 8, 2);
+    g.fillRect(9, 8, 6, 2);
+    g.fillRect(10, 10, 4, 1);
+
+    // Base
+    g.fillStyle(0xffd700);
+    g.fillRect(1, h - 4, 6, 4);
+
+    g.generateTexture('goal-flag', w, h);
     g.destroy();
   }
 }

@@ -60,6 +60,9 @@ export class GameScene extends Phaser.Scene {
     this.platforms = this.physics.add.staticGroup();
     this.createPlatforms(levelData);
 
+    // Create goal flag on the last platform (the goal)
+    this.createGoalFlag(levelData);
+
     // Create hearts
     this.createHearts(levelData);
 
@@ -133,9 +136,11 @@ export class GameScene extends Phaser.Scene {
       this.playerDied();
     }
 
-    // Check level completion (reached top area + enough hearts)
+    // Check level completion (standing on goal platform + enough hearts)
+    const playerBody = this.player.sprite.body as Phaser.Physics.Arcade.Body;
     if (
-      this.player.sprite.y <= levelData.goalY + 40 &&
+      playerBody.blocked.down &&
+      this.player.sprite.y <= levelData.goalY + 20 &&
       this.heartsCollected >= levelData.requiredHearts &&
       !this.isLevelComplete
     ) {
@@ -250,6 +255,37 @@ export class GameScene extends Phaser.Scene {
         });
       }
     }
+  }
+
+  private createGoalFlag(levelData: typeof levels[0]): void {
+    // Find the goal platform (the one closest to goalY)
+    const goalPlat = levelData.platforms.reduce((closest, p) =>
+      Math.abs(p.y - levelData.goalY) < Math.abs(closest.y - levelData.goalY) ? p : closest
+    );
+
+    // Place flag on top of goal platform
+    const flag = this.add.image(goalPlat.x, goalPlat.y - 28, 'goal-flag')
+      .setScale(1.5)
+      .setDepth(5);
+
+    // Gentle wave animation
+    this.tweens.add({
+      targets: flag,
+      angle: { from: -5, to: 5 },
+      duration: 1200,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+
+    // Subtle glow pulse
+    this.tweens.add({
+      targets: flag,
+      alpha: { from: 0.85, to: 1 },
+      duration: 800,
+      yoyo: true,
+      repeat: -1,
+    });
   }
 
   private createPlatforms(levelData: typeof levels[0]): void {

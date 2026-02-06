@@ -64,7 +64,7 @@ export const levels: LevelData[] = [
     name: 'level1',
     bgStyle: 'sunset',
     scrollHeight: 1400,
-    playerStart: { x: 100, y: 1300 },
+    playerStart: { x: 140, y: 1300 },
     goalY: 80,
     requiredHearts: 5,
     platforms: [

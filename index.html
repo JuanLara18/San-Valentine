@@ -293,10 +293,9 @@
       <div class="pixel-divider"></div>
       <div class="side-subtitle" data-i18n-html="html.sideHint">Recoge corazones<br>Evita enemigos<br>Encuentra el mensaje</div>
     </div>
-  </div>
 
-  <!-- Mobile touch controls (hidden on desktop) -->
-  <div class="mobile-controls">
+    <!-- Mobile touch controls (inside wrapper so flex layout includes them) -->
+    <div class="mobile-controls">
     <div class="ctrl-group">
       <div>
         <div class="ctrl-btn ctrl-dpad" id="btn-left">◀</div>
@@ -313,7 +312,8 @@
         <div class="ctrl-label" data-i18n="html.mobileJump">SALTAR</div>
       </div>
     </div>
-  </div>
+    </div> <!-- end mobile-controls -->
+  </div> <!-- end desktop-wrapper -->
 
   <!-- Initialize global mobile input + decorations -->
   <script>
