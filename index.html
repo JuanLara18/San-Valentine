@@ -118,16 +118,24 @@
       image-rendering: crisp-edges;
     }
 
-    /* ===== SIDE PANELS ===== */
+    /* ===== SIDE PANELS (absolute, don't affect canvas centering) ===== */
     .side-panel {
-      position: relative; z-index: 5;
+      position: absolute; z-index: 5;
+      top: 50%; transform: translateY(-50%);
       display: flex; flex-direction: column;
       justify-content: center; align-items: center;
-      padding: 0 40px; gap: 30px;
+      padding: 0 30px; gap: 24px;
       color: #c44dff; text-align: center;
+      pointer-events: none;
     }
-    .side-panel.left { align-items: flex-end; }
-    .side-panel.right { align-items: flex-start; }
+    .side-panel.left {
+      right: calc(50% + (88vh * 2 / 3) / 2 + 40px);
+      align-items: flex-end;
+    }
+    .side-panel.right {
+      left: calc(50% + (88vh * 2 / 3) / 2 + 40px);
+      align-items: flex-start;
+    }
 
     .side-title {
       font-size: 24px; color: #ff6b9d;
@@ -137,15 +145,6 @@
     .side-subtitle {
       font-size: 9px; color: #c44dff;
       opacity: 0.7; line-height: 1.8;
-    }
-    .side-heart {
-      font-size: 40px;
-      animation: heartPulse 1.5s ease-in-out infinite;
-      filter: drop-shadow(0 0 15px rgba(255, 64, 129, 0.6));
-    }
-    @keyframes heartPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
     }
     .side-controls {
       font-size: 7px; color: #9c27b0;
@@ -272,7 +271,6 @@
 
     <!-- Left panel (desktop only) -->
     <div class="side-panel left">
-      <div class="side-heart">💕</div>
       <div class="side-title">Love<br>Quest</div>
       <div class="pixel-divider"></div>
       <div class="side-subtitle" data-i18n="html.sideSubtitle">Una aventura<br>retro de amor</div>
@@ -285,7 +283,6 @@
 
     <!-- Right panel (desktop only) -->
     <div class="side-panel right">
-      <div class="side-heart">✨</div>
       <div class="side-controls" id="side-controls">
         <span>←→</span> <span data-i18n="html.ctrlMove">Mover</span><br>
         <span> ↑ </span> <span data-i18n="html.ctrlJump">Saltar</span><br>
@@ -295,7 +292,6 @@
       </div>
       <div class="pixel-divider"></div>
       <div class="side-subtitle" data-i18n-html="html.sideHint">Recoge corazones<br>Evita enemigos<br>Encuentra el mensaje</div>
-      <div class="side-heart" style="font-size: 28px; animation-delay: 0.5s;">💝</div>
     </div>
   </div>
 
