@@ -445,7 +445,7 @@ export class GameScene extends Phaser.Scene {
 
     const retryText = this.add.text(200, 338, t('game.tryAgain'), {
       fontFamily: gameConfig.ui.fontFamily,
-      fontSize: '10px',
+      fontSize: '8px',
       color: '#ffffff',
     }).setOrigin(0.5).setScrollFactor(0).setDepth(52).setAlpha(0);
 
