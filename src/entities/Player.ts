@@ -1,21 +1,15 @@
 import Phaser from 'phaser';
 import { gameConfig } from '../config/game.config';
 import { audioManager } from '../systems/AudioManager';
-
-/** Global mobile input state set by HTML touch controls */
-interface MobileInput { left: boolean; right: boolean; jump: boolean }
-declare global {
-  interface Window { __mobileInput?: MobileInput; }
-}
+import { InputManager, InputScheme, INPUT_SCHEMES } from '../systems/InputManager';
 
 export class Player {
   public sprite: Phaser.Physics.Arcade.Sprite;
   public lives: number;
   public isInvincible = false;
+  public readonly input: InputManager;
 
   private scene: Phaser.Scene;
-  private cursors: Phaser.Types.Input.Keyboard.CursorKeys | null = null;
-  private wasd: { up: Phaser.Input.Keyboard.Key; left: Phaser.Input.Keyboard.Key; right: Phaser.Input.Keyboard.Key } | null = null;
 
   // --- Advanced platformer feel ---
   /** Timestamp of last time the player was on solid ground */
@@ -30,7 +24,13 @@ export class Player {
   /** Wall jump kick velocity (horizontal push away from wall) */
   private readonly WALL_JUMP_KICK = 180;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, lives: number = 3) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    lives: number = 3,
+    inputScheme: InputScheme = INPUT_SCHEMES.SINGLE,
+  ) {
     this.scene = scene;
     this.lives = lives;
 
@@ -41,15 +41,8 @@ export class Player {
     this.sprite.setSize(16, 24);
     this.sprite.setOffset(8, 6);
 
-    // Keyboard controls
-    if (scene.input.keyboard) {
-      this.cursors = scene.input.keyboard.createCursorKeys();
-      this.wasd = {
-        up: scene.input.keyboard.addKey('W'),
-        left: scene.input.keyboard.addKey('A'),
-        right: scene.input.keyboard.addKey('D'),
-      };
-    }
+    // Input manager with configurable scheme
+    this.input = new InputManager(scene, inputScheme);
   }
 
   update(): void {
@@ -58,11 +51,10 @@ export class Player {
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
     const now = this.scene.time.now;
 
-    // Read from keyboard AND global HTML touch controls
-    const touch = window.__mobileInput;
-    const isLeft = this.cursors?.left.isDown || this.wasd?.left.isDown || touch?.left;
-    const isRight = this.cursors?.right.isDown || this.wasd?.right.isDown || touch?.right;
-    const isJump = this.cursors?.up.isDown || this.wasd?.up.isDown || touch?.jump;
+    // Read from InputManager (handles keyboard + mobile based on scheme)
+    const isLeft = this.input.isLeft;
+    const isRight = this.input.isRight;
+    const isJump = this.input.isJump;
 
     // --- Grounded state tracking ---
     const isOnGround = body.blocked.down || body.touching.down;

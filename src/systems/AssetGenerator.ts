@@ -40,61 +40,131 @@ export class AssetGenerator {
 
     for (let f = 0; f < frames; f++) {
       const ox = f * size;
-      // Body (pink/white)
-      g.fillStyle(0xffb6c1);
-      g.fillRect(ox + 10, 8, 12, 14);
-      // Head
-      g.fillStyle(0xffe4e1);
-      g.fillRect(ox + 11, 4, 10, 10);
-      // Eyes
+
+      // --- Halo (golden glow above head) ---
+      g.fillStyle(0xffd700, 0.5);
+      g.fillRect(ox + 12, 1, 8, 1);
+      g.fillStyle(0xffd700, 0.8);
+      g.fillRect(ox + 13, 0, 6, 1);
+      g.fillRect(ox + 11, 1, 2, 1);
+      g.fillRect(ox + 19, 1, 2, 1);
+
+      // --- Head (rounder, skin tone) ---
+      g.fillStyle(0xffe0bd); // skin
+      g.fillRect(ox + 11, 3, 10, 10);
+      g.fillRect(ox + 12, 2, 8, 1); // top of head
+      g.fillRect(ox + 10, 5, 1, 6); // left cheek
+      g.fillRect(ox + 21, 5, 1, 6); // right cheek
+
+      // --- Hair (little curly tuft) ---
+      g.fillStyle(0xf4a460); // golden-brown
+      g.fillRect(ox + 12, 2, 8, 2);
+      g.fillRect(ox + 11, 3, 2, 2);
+      g.fillRect(ox + 19, 3, 2, 2);
+      g.fillRect(ox + 13, 1, 3, 1); // tuft
+
+      // --- Face ---
+      // Eyes (expressive, dark with white highlight)
       g.fillStyle(0x1a0a2e);
-      g.fillRect(ox + 13, 7, 2, 2);
-      g.fillRect(ox + 18, 7, 2, 2);
+      g.fillRect(ox + 13, 6, 2, 3);
+      g.fillRect(ox + 18, 6, 2, 3);
+      g.fillStyle(0xffffff);
+      g.fillRect(ox + 13, 6, 1, 1); // eye highlight
+      g.fillRect(ox + 18, 6, 1, 1);
+
+      // Blush (pink cheeks)
+      g.fillStyle(0xff9999, 0.6);
+      g.fillRect(ox + 11, 8, 2, 2);
+      g.fillRect(ox + 19, 8, 2, 2);
+
       // Smile
       g.fillStyle(0xff6b9d);
       g.fillRect(ox + 14, 10, 4, 1);
-      // Wings
-      g.fillStyle(0xffffff, 0.9);
+      g.fillStyle(0xff4081);
+      g.fillRect(ox + 15, 11, 2, 1); // lower lip
+
+      // --- Body (white toga/tunic) ---
+      g.fillStyle(0xffffff);
+      g.fillRect(ox + 11, 13, 10, 9);
+      g.fillRect(ox + 10, 14, 12, 7);
+      // Toga folds/shadow
+      g.fillStyle(0xe8e0f0);
+      g.fillRect(ox + 12, 15, 1, 6);
+      g.fillRect(ox + 18, 16, 1, 5);
+      // Pink sash/belt
+      g.fillStyle(0xff6b9d);
+      g.fillRect(ox + 11, 17, 10, 1);
+
+      // --- Wings (detailed, multi-layer) ---
       if (f === 0 || f === 2) {
-        // Wings up
-        g.fillRect(ox + 4, 6, 6, 4);
-        g.fillRect(ox + 22, 6, 6, 4);
-        g.fillRect(ox + 6, 4, 3, 3);
-        g.fillRect(ox + 23, 4, 3, 3);
+        // Wings up position
+        g.fillStyle(0xffffff, 0.95);
+        g.fillRect(ox + 4, 7, 7, 5);
+        g.fillRect(ox + 21, 7, 7, 5);
+        g.fillStyle(0xffffff, 0.7);
+        g.fillRect(ox + 5, 5, 5, 3);
+        g.fillRect(ox + 22, 5, 5, 3);
+        g.fillRect(ox + 6, 3, 3, 3);
+        g.fillRect(ox + 23, 3, 3, 3);
+        // Wing detail/feather lines
+        g.fillStyle(0xe0d4f5, 0.6);
+        g.fillRect(ox + 5, 9, 5, 1);
+        g.fillRect(ox + 22, 9, 5, 1);
       } else {
-        // Wings down
-        g.fillRect(ox + 4, 10, 6, 4);
-        g.fillRect(ox + 22, 10, 6, 4);
-        g.fillRect(ox + 6, 12, 3, 3);
-        g.fillRect(ox + 23, 12, 3, 3);
+        // Wings down/mid position
+        g.fillStyle(0xffffff, 0.95);
+        g.fillRect(ox + 4, 11, 7, 5);
+        g.fillRect(ox + 21, 11, 7, 5);
+        g.fillStyle(0xffffff, 0.7);
+        g.fillRect(ox + 5, 14, 5, 3);
+        g.fillRect(ox + 22, 14, 5, 3);
+        // Wing detail
+        g.fillStyle(0xe0d4f5, 0.6);
+        g.fillRect(ox + 5, 13, 5, 1);
+        g.fillRect(ox + 22, 13, 5, 1);
       }
-      // Legs
-      g.fillStyle(0xffb6c1);
+
+      // --- Bow (on back, small pixel bow) ---
+      g.fillStyle(0xc44dff, 0.7);
+      g.fillRect(ox + 9, 14, 1, 6); // bow staff
+      g.fillStyle(0xff9800, 0.6);
+      g.fillRect(ox + 8, 14, 1, 1); // bow curve top
+      g.fillRect(ox + 8, 19, 1, 1); // bow curve bottom
+
+      // --- Legs ---
+      g.fillStyle(0xffe0bd); // skin color legs
       if (f === 3) {
-        // Jump pose
-        g.fillRect(ox + 11, 22, 4, 5);
-        g.fillRect(ox + 17, 22, 4, 5);
+        // Jump pose - legs tucked
+        g.fillRect(ox + 12, 22, 3, 4);
+        g.fillRect(ox + 17, 22, 3, 4);
       } else if (f === 1) {
         // Run frame 1
-        g.fillRect(ox + 10, 22, 4, 6);
-        g.fillRect(ox + 18, 22, 4, 4);
+        g.fillRect(ox + 11, 22, 3, 5);
+        g.fillRect(ox + 18, 22, 3, 3);
       } else if (f === 2) {
         // Run frame 2
-        g.fillRect(ox + 10, 22, 4, 4);
-        g.fillRect(ox + 18, 22, 4, 6);
+        g.fillRect(ox + 11, 22, 3, 3);
+        g.fillRect(ox + 18, 22, 3, 5);
       } else {
-        // Idle
-        g.fillRect(ox + 11, 22, 4, 6);
-        g.fillRect(ox + 17, 22, 4, 6);
+        // Idle standing
+        g.fillRect(ox + 12, 22, 3, 5);
+        g.fillRect(ox + 17, 22, 3, 5);
       }
-      // Shoes
-      g.fillStyle(0xff4081);
+
+      // --- Sandals ---
+      g.fillStyle(0xc2935b);
       if (f === 3) {
+        g.fillRect(ox + 11, 25, 5, 2);
+        g.fillRect(ox + 16, 25, 5, 2);
+      } else if (f === 1) {
         g.fillRect(ox + 10, 26, 5, 2);
+        g.fillRect(ox + 17, 24, 5, 2);
+      } else if (f === 2) {
+        g.fillRect(ox + 10, 24, 5, 2);
         g.fillRect(ox + 17, 26, 5, 2);
       } else {
-        g.fillRect(ox + 10, 27, 5, 2);
-        g.fillRect(ox + 17, 27, 5, 2);
+        g.fillRect(ox + 11, 26, 5, 2);
+        g.fillRect(ox + 16, 26, 5, 2);
       }
     }
 

@@ -320,41 +320,77 @@
     // Global mobile input state (read by Phaser Player entity)
     window.__mobileInput = { left: false, right: false, jump: false };
 
-    // Wire up touch controls with multi-touch support
-    function bindControl(id, key) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      el.addEventListener('touchstart', function(e) {
+    // Multi-touch: scan ALL active touches on every touch event
+    // This allows pressing left+jump simultaneously
+    (function() {
+      var btnMap = {
+        'btn-left': 'left',
+        'btn-right': 'right',
+        'btn-jump': 'jump'
+      };
+      var btnEls = {};
+      Object.keys(btnMap).forEach(function(id) {
+        btnEls[id] = document.getElementById(id);
+      });
+
+      function updateFromTouches(e) {
         e.preventDefault();
-        window.__mobileInput[key] = true;
-        el.classList.add('active');
-      }, { passive: false });
-      el.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        window.__mobileInput[key] = false;
-        el.classList.remove('active');
-      }, { passive: false });
-      el.addEventListener('touchcancel', function() {
-        window.__mobileInput[key] = false;
-        el.classList.remove('active');
+        // Reset state
+        var state = { left: false, right: false, jump: false };
+
+        // Check every active touch point
+        for (var i = 0; i < e.touches.length; i++) {
+          var touch = e.touches[i];
+          var el = document.elementFromPoint(touch.clientX, touch.clientY);
+          if (!el) continue;
+          // Walk up to find a button (the touch might be on a child like ctrl-label)
+          var btn = el.closest ? el.closest('[id^="btn-"]') : null;
+          if (!btn) btn = el;
+          var key = btnMap[btn.id];
+          if (key) state[key] = true;
+        }
+
+        window.__mobileInput = state;
+
+        // Update visual active classes
+        Object.keys(btnMap).forEach(function(id) {
+          var el = btnEls[id];
+          if (!el) return;
+          if (state[btnMap[id]]) {
+            el.classList.add('active');
+          } else {
+            el.classList.remove('active');
+          }
+        });
+      }
+
+      var area = document.querySelector('.mobile-controls');
+      if (area) {
+        area.addEventListener('touchstart', updateFromTouches, { passive: false });
+        area.addEventListener('touchmove', updateFromTouches, { passive: false });
+        area.addEventListener('touchend', updateFromTouches, { passive: false });
+        area.addEventListener('touchcancel', updateFromTouches, { passive: false });
+      }
+
+      // Mouse fallback for desktop testing (single click only)
+      Object.keys(btnMap).forEach(function(id) {
+        var el = btnEls[id];
+        if (!el) return;
+        var key = btnMap[id];
+        el.addEventListener('mousedown', function() {
+          window.__mobileInput[key] = true;
+          el.classList.add('active');
+        });
+        el.addEventListener('mouseup', function() {
+          window.__mobileInput[key] = false;
+          el.classList.remove('active');
+        });
+        el.addEventListener('mouseleave', function() {
+          window.__mobileInput[key] = false;
+          el.classList.remove('active');
+        });
       });
-      // Also handle mouse for testing on desktop
-      el.addEventListener('mousedown', function() {
-        window.__mobileInput[key] = true;
-        el.classList.add('active');
-      });
-      el.addEventListener('mouseup', function() {
-        window.__mobileInput[key] = false;
-        el.classList.remove('active');
-      });
-      el.addEventListener('mouseleave', function() {
-        window.__mobileInput[key] = false;
-        el.classList.remove('active');
-      });
-    }
-    bindControl('btn-left', 'left');
-    bindControl('btn-right', 'right');
-    bindControl('btn-jump', 'jump');
+    })();
 
     // Generate CSS stars
     (function() {
