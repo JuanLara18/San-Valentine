@@ -20,6 +20,8 @@
 
     html, body {
       width: 100%; height: 100%; overflow: hidden;
+      /* Use dynamic viewport height for Safari iOS (fallback to 100%) */
+      height: 100dvh;
       font-family: 'Press Start 2P', monospace;
       -webkit-tap-highlight-color: transparent;
       touch-action: none; user-select: none;
@@ -29,6 +31,7 @@
     /* ===== DESKTOP LAYOUT ===== */
     .desktop-wrapper {
       width: 100%; height: 100%;
+      height: 100dvh;
       display: flex; justify-content: center; align-items: center;
       position: relative; overflow: hidden;
     }
@@ -187,8 +190,11 @@
         /* Fill available width, height auto from aspect ratio */
         width: 100vw;
         height: calc(100vw * 3 / 2); /* 2:3 aspect ratio */
-        max-height: calc(100vh - 110px); /* Leave room for controls */
-        max-width: calc((100vh - 110px) * 2 / 3); /* Constrain width if height-limited */
+        /* Safari iOS: use dvh to account for browser chrome */
+        max-height: calc(100vh - 90px);
+        max-height: calc(100dvh - 90px);
+        max-width: calc((100vh - 90px) * 2 / 3);
+        max-width: calc((100dvh - 90px) * 2 / 3);
       }
 
       /* Show mobile controls */
@@ -196,52 +202,51 @@
         display: flex;
         position: relative; z-index: 100;
         width: 100%;
-        height: 110px;
+        height: 90px;
         flex-shrink: 0;
-        background: linear-gradient(180deg, #1a0a2e, #0d0221);
-        border-top: 1px solid rgba(196, 77, 255, 0.2);
-        align-items: center;
+        background: linear-gradient(180deg, #1a0a2e 0%, #0d0221 100%);
+        border-top: 2px solid rgba(196, 77, 255, 0.15);
+        align-items: stretch;
         justify-content: space-between;
-        padding: 8px 20px;
+        padding: 8px 10px;
+        gap: 10px;
       }
       .ctrl-group {
-        display: flex; align-items: center; gap: 8px;
+        display: flex; align-items: stretch; gap: 8px;
+        flex: 1;
       }
+      .ctrl-group:first-child { flex: 2; }
+      .ctrl-group:last-child { flex: 1; }
       .ctrl-btn {
         display: flex; align-items: center; justify-content: center;
-        border: 2px solid rgba(255, 107, 157, 0.4);
-        border-radius: 50%;
-        background: rgba(45, 27, 105, 0.6);
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 22px;
+        flex: 1;
+        border: 3px solid rgba(196, 77, 255, 0.3);
+        border-radius: 12px;
+        background: rgba(45, 27, 105, 0.5);
+        color: rgba(255, 255, 255, 0.85);
+        font-family: 'Press Start 2P', monospace;
+        font-size: 26px;
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
-        transition: background 0.1s, border-color 0.1s, transform 0.1s;
+        transition: background 0.08s, border-color 0.08s, transform 0.08s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
       }
       .ctrl-btn:active, .ctrl-btn.active {
-        background: rgba(255, 64, 129, 0.4);
+        background: rgba(255, 64, 129, 0.35);
         border-color: #ff4081;
-        transform: scale(0.92);
-      }
-      .ctrl-dpad {
-        width: 64px; height: 64px;
-        font-size: 24px;
+        transform: scale(0.95);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05);
       }
       .ctrl-jump {
-        width: 80px; height: 80px;
         font-size: 28px;
-        border-color: rgba(255, 64, 129, 0.5);
-        background: rgba(255, 64, 129, 0.15);
+        border-color: rgba(255, 64, 129, 0.4);
+        background: rgba(255, 64, 129, 0.12);
       }
       .ctrl-jump:active, .ctrl-jump.active {
-        background: rgba(255, 64, 129, 0.5);
+        background: rgba(255, 64, 129, 0.45);
       }
       .ctrl-label {
-        font-family: 'Press Start 2P', monospace;
-        font-size: 6px;
-        color: rgba(196, 77, 255, 0.5);
-        text-align: center;
-        margin-top: 4px;
+        display: none;
       }
     }
 
@@ -252,12 +257,15 @@
 
     /* Very small height (landscape phone): compact controls */
     @media (max-height: 500px) {
-      .mobile-controls { height: 70px; padding: 4px 16px; }
-      .ctrl-dpad { width: 48px; height: 48px; font-size: 18px; }
-      .ctrl-jump { width: 60px; height: 60px; font-size: 22px; }
+      .mobile-controls { height: 56px; padding: 4px 8px; gap: 6px; }
+      .ctrl-btn { font-size: 18px; border-radius: 8px; border-width: 2px; }
+      .ctrl-jump { font-size: 20px; }
+      .ctrl-group { gap: 6px; }
       #game-container {
-        max-height: calc(100vh - 70px);
-        max-width: calc((100vh - 70px) * 2 / 3);
+        max-height: calc(100vh - 56px);
+        max-height: calc(100dvh - 56px);
+        max-width: calc((100vh - 56px) * 2 / 3);
+        max-width: calc((100dvh - 56px) * 2 / 3);
       }
     }
   </style>
@@ -296,27 +304,32 @@
 
     <!-- Mobile touch controls (inside wrapper so flex layout includes them) -->
     <div class="mobile-controls">
-    <div class="ctrl-group">
-      <div>
+      <div class="ctrl-group">
         <div class="ctrl-btn ctrl-dpad" id="btn-left">◀</div>
-        <div class="ctrl-label" data-i18n="html.mobileLeft">IZQ</div>
-      </div>
-      <div>
         <div class="ctrl-btn ctrl-dpad" id="btn-right">▶</div>
-        <div class="ctrl-label" data-i18n="html.mobileRight">DER</div>
       </div>
-    </div>
-    <div class="ctrl-group">
-      <div>
+      <div class="ctrl-group">
         <div class="ctrl-btn ctrl-jump" id="btn-jump">▲</div>
-        <div class="ctrl-label" data-i18n="html.mobileJump">SALTAR</div>
       </div>
-    </div>
     </div> <!-- end mobile-controls -->
   </div> <!-- end desktop-wrapper -->
 
   <!-- Initialize global mobile input + decorations -->
   <script>
+    // Fix Safari iOS viewport height: set --vh custom property
+    // This runs on load and on resize/orientation change
+    (function() {
+      function setVH() {
+        var vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', vh + 'px');
+      }
+      setVH();
+      window.addEventListener('resize', setVH);
+      window.addEventListener('orientationchange', function() {
+        setTimeout(setVH, 100);
+      });
+    })();
+
     // Global mobile input state (read by Phaser Player entity)
     window.__mobileInput = { left: false, right: false, jump: false };
 
