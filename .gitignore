@@ -22,3 +22,9 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Screen recordings (used for GIF generation — keep out of git)
+*.mp4
+*.mov
+*.avi
+*.webm
